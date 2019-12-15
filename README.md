@@ -1,6 +1,8 @@
 # CompiledFiles
 
 [![Actions Status](https://github.com/schultetwin1/compiledfiles/workflows/CI/badge.svg)](https://github.com/schultetwin1/compiledfiles/actions)
+[![Rust Docs](https://docs.rs/compiledfiles/badge.svg)](https://docs.rs/compiledfiles/)
+[![Crates.io Link](https://img.shields.io/crates/v/compiledfiles)](https://crates.io/crates/compiledfiles)
 
 A rust library to return a list of all the source files listed in the symbols
 of a native compiled file.
