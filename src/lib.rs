@@ -32,7 +32,8 @@
 //! # Examples
 //!
 //! ```no_run
-//! let files = compiledfiles::parse(std::path::Path::new("path_to_binary")).unwrap();
+//! let elf_file = std::fs::File::open("path_to_binary").unwrap();
+//! let files = compiledfiles::parse(elf_file).unwrap();
 //! for file in files {
 //!     println!("{:?}", file);
 //! }
@@ -195,7 +196,8 @@ fn convert_pdb_checksum_to_checksum(pdb_checksum: pdb::FileChecksum) -> Option<F
 /// # Example
 ///
 /// ```no_run
-/// let files = compiledfiles::parse(std::path::Path::new("path_to_binary")).unwrap();
+/// let elf_file = std::fs::File::open("path_to_binary").unwrap();
+/// let files = compiledfiles::parse(elf_file).unwrap();
 /// for file in files {
 ///     println!("{:?}", file);
 /// }
