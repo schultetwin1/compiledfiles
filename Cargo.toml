@@ -1,8 +1,12 @@
 [package]
 name = "compiledfiles"
+description = "Parse native binary symbols for list of source files used to compile binary"
 version = "0.1.0"
 authors = ["Matt Schulte <schultetwin1@gmail.com>"]
 edition = "2018"
+license = "MIT"
+homepage = "https://github.com/schultetwin1/compiledfiles"
+repository = "https://github.com/schultetwin1/compiledfiles"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

@@ -32,10 +32,7 @@ fn main() {
         Err(err) => {
             match err {
                 compiledfiles::Error::MissingDebugSymbols => {
-                    println!(
-                        "ERROR: \"{}\" missing debug symbols",
-                        binary_path.display(),
-                    );
+                    println!("ERROR: \"{}\" missing debug symbols", binary_path.display(),);
                 }
                 _ => {
                     println!("ERROR: {}", err);
