@@ -108,8 +108,8 @@ pub enum Error {
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> std::fmt::Result {
         match *self {
-            Error::MissingDebugSymbols => write!(f, "{}", self.description()),
-            Error::UnrecognizedFileFormat => write!(f, "{}", self.description()),
+            Error::MissingDebugSymbols => write!(f, "Binary missing debug symbols"),
+            Error::UnrecognizedFileFormat => write!(f, "File was not a recognized file format"),
             Error::Object(s) => write!(f, "{}", s),
             Error::Io(ref e) => write!(f, "{}", e),
             Error::Dwarf(ref e) => write!(f, "{}", e),
@@ -119,17 +119,6 @@ impl fmt::Display for Error {
 }
 
 impl StdError for Error {
-    fn description(&self) -> &str {
-        match *self {
-            Error::MissingDebugSymbols => "Binary missing debug symbols",
-            Error::UnrecognizedFileFormat => "File was not a recognized file format",
-            Error::Object(s) => s,
-            Error::Io(ref e) => e.description(),
-            Error::Dwarf(ref e) => e.description(),
-            Error::Pdb(ref p) => p.description(),
-        }
-    }
-
     fn source(&self) -> Option<&(dyn StdError + 'static)> {
         match *self {
             Error::Dwarf(ref err) => Some(err),
