@@ -180,7 +180,7 @@ fn convert_pdb_checksum_to_checksum(pdb_checksum: pdb::FileChecksum) -> Option<F
 ///
 /// # Arguments
 ///
-/// * `file` - The opened file we want to parse
+/// * `source` - The source from which to read the bytes want to parse
 ///
 /// # Example
 ///
@@ -191,9 +191,9 @@ fn convert_pdb_checksum_to_checksum(pdb_checksum: pdb::FileChecksum) -> Option<F
 ///     println!("{:?}", file);
 /// }
 /// ```
-pub fn parse(mut file: std::fs::File) -> Result<Vec<FileInfo>> {
+pub fn parse<S: Read + Seek + std::fmt::Debug>(mut source: S) -> Result<Vec<FileInfo>> {
     // try parsing a PDB first
-    match pdb::PDB::open(&mut file) {
+    match pdb::PDB::open(&mut source) {
         Ok(pdb) => return parse_pdb(pdb),
         Err(e) => match e {
             pdb::Error::UnrecognizedFileFormat => {
@@ -207,23 +207,19 @@ pub fn parse(mut file: std::fs::File) -> Result<Vec<FileInfo>> {
         },
     };
 
-    file.seek(SeekFrom::Start(0))?;
+    source.seek(SeekFrom::Start(0))?;
 
     // Now try elf or mach-o
     let mut contents = vec![];
-    file.read_to_end(&mut contents)?;
+    source.read_to_end(&mut contents)?;
 
     match object::File::parse(&contents[..]) {
-        Ok(obj) => return parse_object(&obj),
+        Ok(obj) => parse_object(&obj),
         Err(e) => match e {
-            "Unknown file magic" => {
-                // continue
-            }
-            _ => return Err(Error::Object(e)),
+            "Unknown file magic" => Err(Error::UnrecognizedFileFormat),
+            _ => Err(Error::Object(e)),
         },
-    };
-
-    Err(Error::UnrecognizedFileFormat)
+    }
 }
 
 fn parse_pdb<'s, S: pdb::Source<'s> + 's>(mut pdb: pdb::PDB<'s, S>) -> Result<Vec<FileInfo>> {
