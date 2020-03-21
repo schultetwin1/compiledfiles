@@ -1,7 +1,7 @@
 [package]
 name = "compiledfiles"
 description = "Parse native binary symbols for list of source files used to compile binary"
-version = "0.4.0"
+version = "0.5.0"
 authors = ["Matt Schulte <schultetwin1@gmail.com>"]
 edition = "2018"
 license = "MIT"
