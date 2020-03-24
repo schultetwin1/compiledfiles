@@ -279,7 +279,7 @@ fn parse_elf_file(file: &object::File, endianness: gimli::RunTimeEndian) -> Resu
         let data = match file.section_by_name(id.name()) {
             Some(ref section) => section
                 .uncompressed_data()
-                .unwrap_or(Cow::Owned(Vec::with_capacity(1))),
+                .unwrap_or_else(|_| Cow::Owned(Vec::with_capacity(1))),
             None => Cow::Owned(Vec::with_capacity(1)),
         };
         Ok(data)
