@@ -215,7 +215,7 @@ pub fn parse<S: Read + Seek + std::fmt::Debug>(mut source: S) -> Result<Vec<File
 
     match object::File::parse(&contents[..]) {
         Ok(obj) => parse_object(&obj),
-        Err(e) => Err(Error::Object(e))
+        Err(e) => Err(Error::Object(e)),
     }
 }
 
@@ -277,8 +277,10 @@ fn parse_elf_file(file: &object::File, endianness: gimli::RunTimeEndian) -> Resu
     // Load a section and return as `Cow<[u8]>`.
     let load_section = |id: gimli::SectionId| -> Result<Cow<[u8]>> {
         let data = match file.section_by_name(id.name()) {
-            Some(ref section) => section.uncompressed_data().unwrap_or(Cow::Owned(Vec::with_capacity(1))),
-            None => Cow::Owned(Vec::with_capacity(1))
+            Some(ref section) => section
+                .uncompressed_data()
+                .unwrap_or(Cow::Owned(Vec::with_capacity(1))),
+            None => Cow::Owned(Vec::with_capacity(1)),
         };
         Ok(data)
     };
