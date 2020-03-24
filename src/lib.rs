@@ -39,7 +39,7 @@
 //! }
 //! ```
 use gimli::Dwarf;
-use object::Object;
+use object::{Object, ObjectSection};
 use pdb::FallibleIterator;
 
 use std::borrow::Cow;
@@ -99,7 +99,7 @@ pub enum Error {
     Dwarf(gimli::Error),
 
     /// There was an error parsing an ELF or Mach-O file
-    Object(&'static str),
+    Object(object::Error),
 
     /// There was an error parsing a PDB file
     Pdb(pdb::Error),
@@ -141,8 +141,8 @@ impl From<gimli::Error> for Error {
     }
 }
 
-impl From<&'static str> for Error {
-    fn from(s: &'static str) -> Error {
+impl From<object::Error> for Error {
+    fn from(s: object::Error) -> Error {
         Error::Object(s)
     }
 }
@@ -215,10 +215,7 @@ pub fn parse<S: Read + Seek + std::fmt::Debug>(mut source: S) -> Result<Vec<File
 
     match object::File::parse(&contents[..]) {
         Ok(obj) => parse_object(&obj),
-        Err(e) => match e {
-            "Unknown file magic" => Err(Error::UnrecognizedFileFormat),
-            _ => Err(Error::Object(e)),
-        },
+        Err(e) => Err(Error::Object(e))
     }
 }
 
@@ -279,9 +276,11 @@ fn parse_object(file: &object::File) -> Result<Vec<FileInfo>> {
 fn parse_elf_file(file: &object::File, endianness: gimli::RunTimeEndian) -> Result<Vec<FileInfo>> {
     // Load a section and return as `Cow<[u8]>`.
     let load_section = |id: gimli::SectionId| -> Result<Cow<[u8]>> {
-        Ok(file
-            .section_data_by_name(id.name())
-            .unwrap_or(Cow::Borrowed(&[][..])))
+        let data = match file.section_by_name(id.name()) {
+            Some(ref section) => section.uncompressed_data().unwrap_or(Cow::Owned(Vec::with_capacity(1))),
+            None => Cow::Owned(Vec::with_capacity(1))
+        };
+        Ok(data)
     };
     // Load a supplementary section. We don't have a supplementary object file,
     // so always return an empty slice.
