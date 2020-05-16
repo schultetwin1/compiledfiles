@@ -257,9 +257,9 @@ fn parse_object(file: &object::File) -> Result<Vec<FileInfo>> {
 
     if file.has_debug_symbols() {
         match file.format() {
-            object::target_lexicon::BinaryFormat::Elf => parse_elf_file(file, endianness),
-            object::target_lexicon::BinaryFormat::Coff => Err(Error::MissingDebugSymbols),
-            object::target_lexicon::BinaryFormat::Macho => {
+            object::BinaryFormat::Elf => parse_elf_file(file, endianness),
+            object::BinaryFormat::Coff => Err(Error::MissingDebugSymbols),
+            object::BinaryFormat::MachO => {
                 unimplemented!();
             }
             _ => Err(Error::UnrecognizedFileFormat),
