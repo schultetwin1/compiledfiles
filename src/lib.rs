@@ -199,10 +199,6 @@ pub fn parse<S: Read + Seek + std::fmt::Debug>(mut source: S) -> Result<Vec<File
             pdb::Error::UnrecognizedFileFormat => {
                 // continue
             }
-            pdb::Error::IoError(i) if i.kind() == std::io::ErrorKind::UnexpectedEof => {
-                // continue
-                // workaround for https://github.com/willglynn/pdb/issues/75
-            }
             _ => return Err(Error::Pdb(e)),
         },
     };
