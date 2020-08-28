@@ -61,7 +61,7 @@ pub enum FileCheckSum {
 }
 
 /// Basic information stored for each source file. Only the path is required.
-#[derive(Debug, PartialEq, Eq, PartialOrd)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct FileInfo {
     /// Recorded path to the source file
     pub path: PathBuf,
@@ -74,6 +74,12 @@ pub struct FileInfo {
 
     /// Checksum of the source file
     pub checksum: Option<FileCheckSum>,
+}
+
+impl PartialOrd for FileInfo {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        self.path.partial_cmp(&other.path)
+    }
 }
 
 impl Ord for FileInfo {
