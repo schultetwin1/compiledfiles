@@ -14,4 +14,4 @@ readme = "README.md"
 [dependencies]
 gimli = "0.22.0"
 object = "0.21.1"
-pdb = "0.6.0"
+pdb = "0.7.0"
