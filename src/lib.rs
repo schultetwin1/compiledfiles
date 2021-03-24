@@ -318,7 +318,8 @@ fn parse_elf_file(file: &object::File, endianness: gimli::RunTimeEndian) -> Resu
                 let mut path = PathBuf::from(dir_str);
                 if path.is_relative() {
                     if let Some(ref comp_dir) = unit.comp_dir {
-                        let comp_dir = std::path::PathBuf::from(comp_dir.to_string_lossy().into_owned());
+                        let comp_dir =
+                            std::path::PathBuf::from(comp_dir.to_string_lossy().into_owned());
                         path = comp_dir.join(path);
                     }
                 }
