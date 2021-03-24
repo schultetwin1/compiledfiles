@@ -1,6 +1,7 @@
 use spectral::prelude::*;
 
 #[test]
+#[cfg(target_os = "linux")]
 fn basic_executable() {
     let root_dir = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     let test_dir = root_dir.join("tests").join("c");
