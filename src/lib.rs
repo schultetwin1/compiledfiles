@@ -43,8 +43,6 @@ use object::{Object, ObjectSection};
 use pdb::FallibleIterator;
 
 use std::cmp::Ordering;
-use std::error::Error as StdError;
-use std::fmt;
 use std::io::Read;
 use std::io::Seek;
 use std::io::SeekFrom;
@@ -89,74 +87,32 @@ impl Ord for FileInfo {
 }
 
 /// Possible errors for attempting to list all sources
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum Error {
     /// The binary file is a valid file format, but does not contain debug
     /// symbols.
+    #[error("File was missing debug symbols")]
     MissingDebugSymbols,
 
     /// The format of the file past is a unknown format
+    #[error("File format was unrecognized")]
     UnrecognizedFileFormat,
 
     /// An IO error occurred
-    Io(std::io::Error),
+    #[error("Error occured reading input data")]
+    Io {#[from] source: std::io::Error},
 
     /// There was an error parsing the Dwarf information
-    Dwarf(gimli::Error),
+    #[error("Error occured while parsing Dwarf information")]
+    Dwarf {#[from] source: gimli::Error },
 
     /// There was an error parsing an ELF or Mach-O file
-    Object(object::Error),
+    #[error("Error occured while parsing ELF or Macho-O file")]
+    Object {#[from] source: object::Error},
 
     /// There was an error parsing a PDB file
-    Pdb(pdb::Error),
-}
-
-impl fmt::Display for Error {
-    fn fmt(&self, f: &mut fmt::Formatter) -> std::fmt::Result {
-        match *self {
-            Error::MissingDebugSymbols => write!(f, "Binary missing debug symbols"),
-            Error::UnrecognizedFileFormat => write!(f, "File was not a recognized file format"),
-            Error::Object(s) => write!(f, "{}", s),
-            Error::Io(ref e) => write!(f, "{}", e),
-            Error::Dwarf(ref e) => write!(f, "{}", e),
-            Error::Pdb(ref p) => write!(f, "{}", p),
-        }
-    }
-}
-
-impl StdError for Error {
-    fn source(&self) -> Option<&(dyn StdError + 'static)> {
-        match *self {
-            Error::Dwarf(ref err) => Some(err),
-            Error::Io(ref err) => Some(err),
-            Error::Pdb(ref err) => Some(err),
-            Error::MissingDebugSymbols | Error::UnrecognizedFileFormat | Error::Object(_) => None,
-        }
-    }
-}
-
-impl From<std::io::Error> for Error {
-    fn from(e: std::io::Error) -> Error {
-        Error::Io(e)
-    }
-}
-
-impl From<gimli::Error> for Error {
-    fn from(e: gimli::Error) -> Error {
-        Error::Dwarf(e)
-    }
-}
-
-impl From<object::Error> for Error {
-    fn from(s: object::Error) -> Error {
-        Error::Object(s)
-    }
-}
-
-impl From<pdb::Error> for Error {
-    fn from(p: pdb::Error) -> Error {
-        Error::Pdb(p)
-    }
+    #[error("Error occured while parsing PDB file")]
+    Pdb {#[from] source: pdb::Error },
 }
 
 type Result<T> = ::std::result::Result<T, Error>;
@@ -204,8 +160,8 @@ pub fn parse<S: Read + Seek + std::fmt::Debug>(mut source: S) -> Result<Vec<File
         Err(e) => match e {
             pdb::Error::UnrecognizedFileFormat => {
                 // continue
-            }
-            _ => return Err(Error::Pdb(e)),
+            },
+            _ => return Err(Error::Pdb { source: e }),
         },
     };
 
@@ -217,7 +173,7 @@ pub fn parse<S: Read + Seek + std::fmt::Debug>(mut source: S) -> Result<Vec<File
 
     match object::File::parse(&contents[..]) {
         Ok(obj) => parse_object(&obj),
-        Err(e) => Err(Error::Object(e)),
+        Err(e) => Err(Error::Object { source: e }),
     }
 }
 
