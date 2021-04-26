@@ -16,5 +16,6 @@ fn main() {
         .output()
         .unwrap();
 
+    println!("cargo:rustc-env=COMPILEDFILES_BASIC_TEST_BIN_PATH={}", output.display());
     println!("Output: {}", std::str::from_utf8(&cmd.stdout).unwrap());
 }

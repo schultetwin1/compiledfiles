@@ -6,8 +6,7 @@ fn basic_executable() {
     let test_dir = root_dir.join("tests").join("c");
     let hello_source = test_dir.join("hello.c").canonicalize().unwrap();
 
-    let out_dir = env!("OUT_DIR");
-    let bin_path = std::path::PathBuf::from(out_dir).join("hello");
+    let bin_path = std::path::PathBuf::from(env!("COMPILEDFILES_BASIC_TEST_BIN_PATH"));
 
     let elf_file = std::fs::File::open(&bin_path).unwrap();
     let files = compiledfiles::parse(elf_file).unwrap();
