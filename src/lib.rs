@@ -100,19 +100,31 @@ pub enum Error {
 
     /// An IO error occurred
     #[error("Error occured reading input data")]
-    Io {#[from] source: std::io::Error},
+    Io {
+        #[from]
+        source: std::io::Error,
+    },
 
     /// There was an error parsing the Dwarf information
     #[error("Error occured while parsing Dwarf information")]
-    Dwarf {#[from] source: gimli::Error },
+    Dwarf {
+        #[from]
+        source: gimli::Error,
+    },
 
     /// There was an error parsing an ELF or Mach-O file
     #[error("Error occured while parsing ELF or Macho-O file")]
-    Object {#[from] source: object::Error},
+    Object {
+        #[from]
+        source: object::Error,
+    },
 
     /// There was an error parsing a PDB file
     #[error("Error occured while parsing PDB file")]
-    Pdb {#[from] source: pdb::Error },
+    Pdb {
+        #[from]
+        source: pdb::Error,
+    },
 }
 
 type Result<T> = ::std::result::Result<T, Error>;
@@ -160,7 +172,7 @@ pub fn parse<S: Read + Seek + std::fmt::Debug>(mut source: S) -> Result<Vec<File
         Err(e) => match e {
             pdb::Error::UnrecognizedFileFormat => {
                 // continue
-            },
+            }
             _ => return Err(Error::Pdb { source: e }),
         },
     };
