@@ -42,7 +42,6 @@ use gimli::Dwarf;
 use object::{Object, ObjectSection};
 use pdb::FallibleIterator;
 
-use std::borrow::Cow;
 use std::cmp::Ordering;
 use std::error::Error as StdError;
 use std::fmt;
@@ -51,6 +50,7 @@ use std::io::Seek;
 use std::io::SeekFrom;
 use std::path::PathBuf;
 use std::vec::Vec;
+use std::{borrow::Cow, path::Path};
 
 /// Checksum of the source file's content
 #[derive(Debug, PartialEq, Eq, PartialOrd)]
@@ -219,6 +219,29 @@ pub fn parse<S: Read + Seek + std::fmt::Debug>(mut source: S) -> Result<Vec<File
         Ok(obj) => parse_object(&obj),
         Err(e) => Err(Error::Object(e)),
     }
+}
+
+/// Parses out the source file information from a file at a given path
+///
+/// # Arguments
+///
+/// * `path` - The path of the file to read the source info from
+///
+/// # Example
+///
+/// ```no_run
+/// let elf_file = std::path::PathBuf::from("path_to_binary");
+/// let files = compiledfiles::parse_path(&elf_file).unwrap();
+/// for file in files {
+///     println!("{:?}", file);
+/// }
+/// ```
+pub fn parse_path<P>(path: P) -> Result<Vec<FileInfo>>
+where
+    P: AsRef<Path>,
+{
+    let file = std::fs::File::open(path)?;
+    parse(file)
 }
 
 fn parse_pdb<'s, S: pdb::Source<'s> + 's>(mut pdb: pdb::PDB<'s, S>) -> Result<Vec<FileInfo>> {
