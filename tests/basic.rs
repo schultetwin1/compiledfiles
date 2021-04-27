@@ -5,7 +5,7 @@ use std::path::PathBuf;
 fn basic_executable() {
     let root_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     let test_dir = root_dir.join("tests").join("c");
-    let hello_source = test_dir.join("hello.c").canonicalize().unwrap();
+    let hello_source = test_dir.join("hello.c");
 
     let symbols_path = PathBuf::from(env!("COMPILEDFILES_BASIC_TEST_SYM_PATH"));
 
