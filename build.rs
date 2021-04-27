@@ -9,13 +9,14 @@ fn main() {
     let out_dir = std::env::var("OUT_DIR").unwrap();
     let out_dir = std::path::PathBuf::from(out_dir);
     let input = std::path::PathBuf::from(path_to_c_source);
-    let output = out_dir.join("hello");
+    let mut output = out_dir.join("hello");
     let mut cmd = compiler.to_command();
     if compiler.is_like_msvc() {
+        output.set_extension("exe");
         cmd.args(&[
             input.to_str().unwrap(),
             "/LINK",
-            &format!("/OUT:{}", output.to_str().unwrap()),
+            &format!("/Fe:{}", output.to_str().unwrap()),
         ]);
     } else {
         cmd.args(&[input.to_str().unwrap(), "-o", output.to_str().unwrap()]);
@@ -25,6 +26,8 @@ fn main() {
 
     let cmd = cmd.output().unwrap();
 
+    println!("Output: {}", std::str::from_utf8(&cmd.stdout).unwrap());
+
     if !cmd.status.success() {
         panic!("Failed to compile test binary");
     }
@@ -33,5 +36,4 @@ fn main() {
         "cargo:rustc-env=COMPILEDFILES_BASIC_TEST_BIN_PATH={}",
         output.display()
     );
-    println!("Output: {}", std::str::from_utf8(&cmd.stdout).unwrap());
 }
