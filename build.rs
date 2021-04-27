@@ -9,17 +9,19 @@ fn main() {
     let out_dir = std::env::var("OUT_DIR").unwrap();
     let out_dir = std::path::PathBuf::from(out_dir);
     let input = std::path::PathBuf::from(path_to_c_source);
-    let mut output = out_dir.join("hello");
+    let mut binary = out_dir.join("hello");
+    let mut symbols = binary.clone();
     let mut cmd = compiler.to_command();
     if compiler.is_like_msvc() {
-        output.set_extension("exe");
+        binary.set_extension("exe");
+        symbols.set_extension("pdb");
         cmd.args(&[
             input.to_str().unwrap(),
             "/LINK",
-            &format!("/Fe:{}", output.to_str().unwrap()),
+            &format!("/Fe:{}", binary.to_str().unwrap()),
         ]);
     } else {
-        cmd.args(&[input.to_str().unwrap(), "-o", output.to_str().unwrap()]);
+        cmd.args(&[input.to_str().unwrap(), "-o", binary.to_str().unwrap()]);
     };
 
     println!("Running command: {:?}", cmd);
@@ -34,6 +36,10 @@ fn main() {
 
     println!(
         "cargo:rustc-env=COMPILEDFILES_BASIC_TEST_BIN_PATH={}",
-        output.display()
+        binary.display()
+    );
+    println!(
+        "cargo:rustc-env=COMPILEDFILES_BASIC_TEST_SYM_PATH={}",
+        symbols.display()
     );
 }
