@@ -10,23 +10,27 @@ fn main() {
     let out_dir = std::path::PathBuf::from(out_dir);
     let input = std::path::PathBuf::from(path_to_c_source);
     let output = out_dir.join("hello");
-    let cmd = if compiler.is_like_msvc() {
-        compiler
-            .to_command()
-            .args(&[
+    let mut cmd = if compiler.is_like_msvc() {
+        let mut cmd = compiler.to_command();
+        cmd.args(&[
                 input.to_str().unwrap(),
                 "/LINK",
                 &format!("/OUT:{}", output.to_str().unwrap()),
-            ])
-            .output()
-            .unwrap()
+            ]);
+        cmd
     } else {
-        compiler
-            .to_command()
-            .args(&[input.to_str().unwrap(), "-o", output.to_str().unwrap()])
-            .output()
-            .unwrap()
+        let mut cmd = compiler.to_command();
+        cmd.args(&[input.to_str().unwrap(), "-o", output.to_str().unwrap()]);
+        cmd
     };
+
+    println!("Running command: {:?}", cmd);
+
+    let cmd = cmd.output().unwrap();
+
+    if !cmd.status.success() {
+        panic!("Failed to compile test binary");
+    }
 
     println!(
         "cargo:rustc-env=COMPILEDFILES_BASIC_TEST_BIN_PATH={}",
