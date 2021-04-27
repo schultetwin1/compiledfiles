@@ -13,10 +13,10 @@ fn main() {
     let mut cmd = if compiler.is_like_msvc() {
         let mut cmd = compiler.to_command();
         cmd.args(&[
-                input.to_str().unwrap(),
-                "/LINK",
-                &format!("/OUT:{}", output.to_str().unwrap()),
-            ]);
+            input.to_str().unwrap(),
+            "/LINK",
+            &format!("/OUT:{}", output.to_str().unwrap()),
+        ]);
         cmd
     } else {
         let mut cmd = compiler.to_command();
