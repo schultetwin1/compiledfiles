@@ -5,6 +5,7 @@ fn main() {
     println!("cargo:rerun-if-changed=build.rs");
 
     let compiler = cc::Build::new().file(path_to_c_source).get_compiler();
+    let target = std::env::var("TARGET").unwrap();
 
     let out_dir = std::env::var("OUT_DIR").unwrap();
     let out_dir = std::path::PathBuf::from(out_dir);
@@ -21,6 +22,17 @@ fn main() {
             &format!("/Fe:{}", binary.to_str().unwrap()),
         ]);
     } else {
+        if target.contains("apple") {
+            symbols.pop();
+            symbols.push(format!(
+                "{}.dSYM",
+                binary.file_name().unwrap().to_str().unwrap()
+            ));
+            symbols.push("Contents");
+            symbols.push("Resources");
+            symbols.push("DWARF");
+            symbols.push(binary.file_name().unwrap());
+        }
         cmd.args(&[input.to_str().unwrap(), "-o", binary.to_str().unwrap()]);
     };
 

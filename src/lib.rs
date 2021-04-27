@@ -256,10 +256,9 @@ fn parse_object(file: &object::File) -> Result<Vec<FileInfo>> {
         match file.format() {
             object::BinaryFormat::Elf => parse_elf_file(file, endianness),
             object::BinaryFormat::Coff => Err(Error::MissingDebugSymbols),
-            object::BinaryFormat::MachO => {
-                unimplemented!();
-            }
-            _ => Err(Error::UnrecognizedFileFormat),
+            object::BinaryFormat::MachO => parse_elf_file(file, endianness),
+            object::BinaryFormat::Pe => Err(Error::MissingDebugSymbols),
+            object::BinaryFormat::Wasm => unimplemented!(),
         }
     } else {
         Err(Error::MissingDebugSymbols)
