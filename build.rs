@@ -19,6 +19,7 @@ fn main() {
             input.to_str().unwrap(),
             "/LINK",
             &format!("/Fe:{}", binary.to_str().unwrap()),
+            &format!("/Fo:{}", binary.parent().unwrap().to_str().unwrap()),
         ]);
     } else {
         cmd.args(&[input.to_str().unwrap(), "-o", binary.to_str().unwrap()]);
