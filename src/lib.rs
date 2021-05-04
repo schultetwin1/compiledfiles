@@ -276,12 +276,9 @@ fn parse_elf_file(file: &object::File, endianness: gimli::RunTimeEndian) -> Resu
         };
         Ok(data)
     };
-    // Load a supplementary section. We don't have a supplementary object file,
-    // so always return an empty slice.
-    let load_section_sup = |_| Ok(Cow::Borrowed(&[][..]));
 
     // Load all of the sections.
-    let dwarf_cow = Dwarf::load(&load_section, &load_section_sup)?;
+    let dwarf_cow = Dwarf::load(&load_section)?;
 
     // Borrow a `Cow<[u8]>` to create an `EndianSlice`.
     let borrow_section: &dyn for<'a> Fn(
