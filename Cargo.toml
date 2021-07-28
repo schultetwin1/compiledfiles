@@ -12,7 +12,7 @@ readme = "README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-gimli = "0.24.0"
+gimli = "0.25.0"
 object = "0.26.0"
 pdb = "0.7.0"
 thiserror = "1.0"
