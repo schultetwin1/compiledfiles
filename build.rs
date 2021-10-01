@@ -43,9 +43,7 @@ fn main() {
 
     println!("Output: {}", std::str::from_utf8(&cmd.stdout).unwrap());
 
-    if !cmd.status.success() {
-        panic!("Failed to compile test binary");
-    }
+    assert!(cmd.status.success(), "Failed to compile test binary");
 
     println!(
         "cargo:rustc-env=COMPILEDFILES_BASIC_TEST_BIN_PATH={}",
