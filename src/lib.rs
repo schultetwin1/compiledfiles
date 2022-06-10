@@ -285,7 +285,7 @@ fn parse_elf_file(file: &object::File, endianness: gimli::RunTimeEndian) -> Resu
     let borrow_section: &dyn for<'a> Fn(
         &'a Cow<[u8]>,
     ) -> gimli::EndianSlice<'a, gimli::RunTimeEndian> =
-        &|section| gimli::EndianSlice::new(&*section, endianness);
+        &|section| gimli::EndianSlice::new(section, endianness);
 
     // Create `EndianSlice`s for all of the sections.
     let dwarf = dwarf_cow.borrow(&borrow_section);
