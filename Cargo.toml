@@ -14,7 +14,7 @@ readme = "README.md"
 [dependencies]
 gimli = "0.26.0"
 object = "0.28.1"
-pdb = "0.7.0"
+pdb = "0.8.0"
 thiserror = "1.0"
 
 [build-dependencies]
