@@ -16,7 +16,7 @@ fn main() {
     if compiler.is_like_msvc() {
         binary.set_extension("exe");
         symbols.set_extension("pdb");
-        cmd.args(&[
+        cmd.args([
             input.to_str().unwrap(),
             "/LINK",
             &format!("/Fe:{}", binary.to_str().unwrap()),
@@ -34,7 +34,7 @@ fn main() {
             symbols.push("DWARF");
             symbols.push(binary.file_name().unwrap());
         }
-        cmd.args(&[input.to_str().unwrap(), "-o", binary.to_str().unwrap()]);
+        cmd.args([input.to_str().unwrap(), "-o", binary.to_str().unwrap()]);
     };
 
     println!("Running command: {:?}", cmd);
