@@ -45,7 +45,6 @@ use pdb::FallibleIterator;
 use std::cmp::Ordering;
 use std::io::Read;
 use std::io::Seek;
-use std::io::SeekFrom;
 use std::path::PathBuf;
 use std::vec::Vec;
 use std::{borrow::Cow, path::Path};
@@ -177,7 +176,7 @@ pub fn parse<S: Read + Seek + std::fmt::Debug>(mut source: S) -> Result<Vec<File
         },
     };
 
-    source.seek(SeekFrom::Start(0))?;
+    source.rewind()?;
 
     // Now try elf or mach-o
     let mut contents = vec![];
