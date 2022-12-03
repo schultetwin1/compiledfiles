@@ -22,7 +22,7 @@ fn main() {
         Ok(file) => file,
         Err(e) => {
             println!("Error opening file \"{}\"", binary_path.display());
-            print!("{}", e);
+            print!("{e}");
             process::exit(1);
         }
     };
@@ -35,7 +35,7 @@ fn main() {
                     println!("ERROR: \"{}\" missing debug symbols", binary_path.display(),);
                 }
                 _ => {
-                    println!("ERROR: {}", err);
+                    println!("ERROR: {err}");
                 }
             }
             process::exit(1);
@@ -43,6 +43,6 @@ fn main() {
     };
 
     for file in files {
-        println!("{:?}", file);
+        println!("{file:?}");
     }
 }

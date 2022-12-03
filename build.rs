@@ -1,7 +1,7 @@
 fn main() {
     let path_to_c_source = "tests/c/hello.c";
     // Tell Cargo that if the given file changes, to rerun this build script.
-    println!("cargo:rerun-if-changed={}", path_to_c_source);
+    println!("cargo:rerun-if-changed={path_to_c_source}");
     println!("cargo:rerun-if-changed=build.rs");
 
     let compiler = cc::Build::new().file(path_to_c_source).get_compiler();
@@ -37,7 +37,7 @@ fn main() {
         cmd.args([input.to_str().unwrap(), "-o", binary.to_str().unwrap()]);
     };
 
-    println!("Running command: {:?}", cmd);
+    println!("Running command: {cmd:?}");
 
     let cmd = cmd.output().unwrap();
 
