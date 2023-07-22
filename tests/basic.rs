@@ -11,5 +11,5 @@ fn basic_executable() {
     let symbols_file = std::fs::File::open(symbols_path).unwrap();
     let files = compiledfiles::parse(symbols_file).unwrap();
 
-    assert!(files.iter().find(|&f| f.path == hello_source).is_some());
+    assert!(files.iter().any(|f| f.path == hello_source));
 }

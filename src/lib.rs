@@ -75,7 +75,7 @@ pub struct FileInfo {
 
 impl PartialOrd for FileInfo {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        self.path.partial_cmp(&other.path)
+        Some(self.cmp(other))
     }
 }
 
