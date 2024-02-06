@@ -30,7 +30,7 @@ jobs:
 
       - name: 'Setup Rust Toolchain'
         run: |
-          rustup toolchain install ${{ matrix.rust }} --profile minimal
+          rustup toolchain install ${{ matrix.rust }}
           rustup default ${{ matrix.rust }}
 
       - name: 'Build'
