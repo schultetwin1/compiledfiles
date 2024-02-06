@@ -34,7 +34,7 @@ jobs:
           rustup default ${{ matrix.rust }}
 
       - name: 'Build'
-        run: cargo build --release--all-features
+        run: cargo build --release --all-features
 
       - name: 'Test'
         run: cargo test
