@@ -30,7 +30,7 @@ jobs:
 
       - name: 'Setup Rust Toolchain'
         run: |
-          rustup toolchain install ${{ matrix.rust }} --components rustfmt,clippy
+          rustup toolchain install ${{ matrix.rust }} --component rustfmt,clippy
           rustup default ${{ matrix.rust }}
 
       - name: 'Build'
