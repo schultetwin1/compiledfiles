@@ -46,7 +46,6 @@ use std::cmp::Ordering;
 use std::io::Read;
 use std::io::Seek;
 use std::path::PathBuf;
-use std::vec::Vec;
 use std::{borrow::Cow, path::Path};
 
 /// Checksum of the source file's content
