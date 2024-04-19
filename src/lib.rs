@@ -38,7 +38,7 @@
 //!     println!("{:?}", file);
 //! }
 //! ```
-use gimli::Dwarf;
+use gimli::DwarfSections;
 use object::{Object, ObjectSection};
 use pdb::FallibleIterator;
 
@@ -268,16 +268,14 @@ fn parse_elf_file(file: &object::File, endianness: gimli::RunTimeEndian) -> Resu
     // Load a section and return as `Cow<[u8]>`.
     let load_section = |id: gimli::SectionId| -> Result<Cow<[u8]>> {
         let data = match file.section_by_name(id.name()) {
-            Some(ref section) => section
-                .uncompressed_data()
-                .unwrap_or_else(|_| Cow::Owned(Vec::with_capacity(1))),
-            None => Cow::Owned(Vec::with_capacity(1)),
+            Some(ref section) => section.uncompressed_data().unwrap_or_default(),
+            None => Default::default(),
         };
         Ok(data)
     };
 
     // Load all of the sections.
-    let dwarf_cow = Dwarf::load(&load_section)?;
+    let dwarf_sections = DwarfSections::load(&load_section)?;
 
     // Borrow a `Cow<[u8]>` to create an `EndianSlice`.
     let borrow_section: &dyn for<'a> Fn(
@@ -286,7 +284,7 @@ fn parse_elf_file(file: &object::File, endianness: gimli::RunTimeEndian) -> Resu
         &|section| gimli::EndianSlice::new(section, endianness);
 
     // Create `EndianSlice`s for all of the sections.
-    let dwarf = dwarf_cow.borrow(&borrow_section);
+    let dwarf = dwarf_sections.borrow(&borrow_section);
 
     // Iterate over the compilation units.
     let mut iter = dwarf.units();
