@@ -13,7 +13,7 @@ readme = "README.md"
 
 [dependencies]
 gimli = "0.31.1"
-object = "0.36.5"
+object = "0.36.7"
 pdb = "0.8.0"
 thiserror = "2.0"
 
