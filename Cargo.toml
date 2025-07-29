@@ -9,6 +9,10 @@ homepage = "https://github.com/schultetwin1/compiledfiles"
 repository = "https://github.com/schultetwin1/compiledfiles"
 readme = "README.md"
 
+[features]
+default = ["serde"]
+serde = ["dep:serde"]
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
@@ -16,6 +20,10 @@ gimli = "0.31.1"
 object = "0.36.7"
 pdb = "0.8.0"
 thiserror = "2.0"
+serde = { version = "1.0", features = ["derive"], optional = true }
+
+[dev-dependencies]
+serde_json = "1.0"
 
 [build-dependencies]
 cc = "1.2"

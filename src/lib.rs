@@ -50,6 +50,7 @@ use std::{borrow::Cow, path::Path};
 
 /// Checksum of the source file's content
 #[derive(Debug, PartialEq, Eq, PartialOrd)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum FileCheckSum {
     Md5([u8; 16]),
     Sha1([u8; 20]),
@@ -58,6 +59,7 @@ pub enum FileCheckSum {
 
 /// Basic information stored for each source file. Only the path is required.
 #[derive(Debug, PartialEq, Eq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct FileInfo {
     /// Recorded path to the source file
     pub path: PathBuf,
